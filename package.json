@@ -5,6 +5,7 @@
   "author": "Lucas Matos Bognotti <lucasmatosbognotti@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "lint:fix": "eslint --fix .",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -18,6 +19,7 @@
     "eslint-plugin-node": "11",
     "eslint-plugin-promise": "4",
     "husky": "6.0.0",
+    "lint-staged": "^11.1.2",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.3.5"
   }
