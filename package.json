@@ -5,6 +5,8 @@
   "author": "Lucas Matos Bognotti <lucasmatosbognotti@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
     "@types/node": "^16.6.1",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.3.5"
