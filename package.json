@@ -1,0 +1,7 @@
+{
+  "name": "clean-architecture",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Lucas Matos Bognotti <lucasmatosbognotti@gmail.com>",
+  "license": "MIT"
+}
