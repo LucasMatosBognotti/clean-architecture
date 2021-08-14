@@ -5,7 +5,8 @@
   "author": "Lucas Matos Bognotti <lucasmatosbognotti@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "jest",
+    "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules src/index.ts",
+    "test": "jest --passWithNoTests --no-cache --runInBand",
     "test:staged": "yarn test",
     "lint:fix": "eslint --fix .",
     "prepare": "husky install"
