@@ -7,13 +7,26 @@ interface SystemUnderTestTypes {
   emailValidatorStub: EmailValidator
 }
 
-const makeSystemUnderTest = (): SystemUnderTestTypes => {
+const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
     isValid (email: string): boolean {
       return true
     }
   }
-  const emailValidatorStub = new EmailValidatorStub()
+  return new EmailValidatorStub()
+}
+
+const makeEmailValidatorWithError = (): EmailValidator => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid (email: string): boolean {
+      throw new Error()
+    }
+  }
+  return new EmailValidatorStub()
+}
+
+const makeSystemUnderTest = (): SystemUnderTestTypes => {
+  const emailValidatorStub = makeEmailValidator()
   const systemUnderTest = new SignUpController(emailValidatorStub)
 
   return {
@@ -111,12 +124,7 @@ describe('SignUp Controller', () => {
   })
 
   test('Should returns 500 if EmailValidator throws', () => {
-    class EmailValidatorStub implements EmailValidator {
-      isValid (email: string): boolean {
-        throw new Error()
-      }
-    }
-    const emailValidatorStub = new EmailValidatorStub()
+    const emailValidatorStub = makeEmailValidatorWithError()
     const systemUnderTest = new SignUpController(emailValidatorStub)
     const httpRequest = {
       body: {
