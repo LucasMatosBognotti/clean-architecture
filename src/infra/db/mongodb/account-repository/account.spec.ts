@@ -12,8 +12,12 @@ describe('Account MongoDB Repository', () => {
     await MongoHelper.disconnect()
   })
 
+  const makeSystemUnderTest = (): AccountMongoRepository => {
+    return new AccountMongoRepository()
+  }
+
   test('Should return an account on success', async () => {
-    const systemUnderTest = new AccountMongoRepository()
+    const systemUnderTest = makeSystemUnderTest()
     const account = await systemUnderTest.add({
       name: 'any_name',
       email: 'any_email',
