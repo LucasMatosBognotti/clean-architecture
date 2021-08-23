@@ -1,9 +1,21 @@
+import { LogErrorRepository } from '../../data/protocols/log-error-repository'
+import { serverError } from '../../presentation/helpers/http-helper'
 import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols'
 import { LogControllerDecorator } from './log'
 
 interface SystemUnderTest {
   controllerStub: Controller
   systemUnderTest: LogControllerDecorator
+  logErrorRepositoryStub: LogErrorRepository
+}
+
+const makeLogErrorRepository = (): LogErrorRepository => {
+  class LogErrorRepositoryStub implements LogErrorRepository {
+    async log (stack: string): Promise<void> {
+      return new Promise(resolve => resolve())
+    }
+  }
+  return new LogErrorRepositoryStub()
 }
 
 const makeController = (): Controller => {
@@ -23,10 +35,12 @@ const makeController = (): Controller => {
 
 const makeSystemUnderTest = (): SystemUnderTest => {
   const controllerStub = makeController()
-  const systemUnderTest = new LogControllerDecorator(controllerStub)
+  const logErrorRepositoryStub = makeLogErrorRepository()
+  const systemUnderTest = new LogControllerDecorator(controllerStub, logErrorRepositoryStub)
   return {
     controllerStub,
-    systemUnderTest
+    systemUnderTest,
+    logErrorRepositoryStub
   }
 }
 
@@ -63,5 +77,24 @@ describe('LogController', () => {
         name: 'Lucas'
       }
     })
+  })
+
+  test('Should call LogErrorRepository with correct error if controller returns a server error', async () => {
+    const { systemUnderTest, controllerStub, logErrorRepositoryStub } = makeSystemUnderTest()
+    const fakeError = new Error()
+    fakeError.stack = 'any_stack'
+    const error = serverError(fakeError)
+    const logSpy = jest.spyOn(logErrorRepositoryStub, 'log')
+    jest.spyOn(controllerStub, 'handle').mockReturnValueOnce(new Promise(resolve => resolve(error)))
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password'
+      }
+    }
+    await systemUnderTest.handle(httpRequest)
+    expect(logSpy).toHaveBeenCalledWith('any_stack')
   })
 })
