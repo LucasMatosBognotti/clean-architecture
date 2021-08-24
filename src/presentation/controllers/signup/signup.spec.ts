@@ -1,12 +1,22 @@
 import { SignUpController } from './signup'
 import { EmailValidator, AddAccount, AddAccountModel, AccountModel } from './signup-protocols'
 import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
+import { HttpRequest } from '../../protocols'
 
 interface SystemUnderTestTypes {
   systemUnderTest: SignUpController
   emailValidatorStub: EmailValidator
   addAccountStub: AddAccount
 }
+
+const makeFakeRequest = (): HttpRequest => ({
+  body: {
+    name: 'any_name',
+    email: 'any_email@mail.com',
+    password: 'any_password',
+    passwordConfirmation: 'any_password'
+  }
+})
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
@@ -135,16 +145,8 @@ describe('SignUp Controller', () => {
   test('Should call EmailValidator with correct email', async () => {
     const { systemUnderTest, emailValidatorStub } = makeSystemUnderTest()
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
-    }
-    await systemUnderTest.handle(httpRequest)
-    expect(isValidSpy).toHaveBeenCalledWith('any_email')
+    await systemUnderTest.handle(makeFakeRequest())
+    expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
 
   test('Should returns 500 if EmailValidator throws', async () => {
@@ -152,15 +154,7 @@ describe('SignUp Controller', () => {
     jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
       throw new Error()
     })
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
-    }
-    const httpResponse = await systemUnderTest.handle(httpRequest)
+    const httpResponse = await systemUnderTest.handle(makeFakeRequest())
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
   })
@@ -170,15 +164,7 @@ describe('SignUp Controller', () => {
     jest.spyOn(addAccountStub, 'add').mockImplementationOnce(async () => {
       return await new Promise((resolve, reject) => (reject(new Error())))
     })
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
-    }
-    const httpResponse = await systemUnderTest.handle(httpRequest)
+    const httpResponse = await systemUnderTest.handle(makeFakeRequest())
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
   })
@@ -186,34 +172,17 @@ describe('SignUp Controller', () => {
   test('Should call AddAccount with corrent values', async () => {
     const { systemUnderTest, addAccountStub } = makeSystemUnderTest()
     const addSpy = jest.spyOn(addAccountStub, 'add')
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
-    }
-    await systemUnderTest.handle(httpRequest)
+    await systemUnderTest.handle(makeFakeRequest())
     expect(addSpy).toHaveBeenCalledWith({
       name: 'any_name',
-      email: 'any_email',
+      email: 'any_email@mail.com',
       password: 'any_password'
     })
   })
 
   test('Should return 200 if valid data is provided', async () => {
     const { systemUnderTest } = makeSystemUnderTest()
-    const httpRequest = {
-      body: {
-        id: 'valid_id',
-        name: 'valid_name',
-        email: 'valid_email',
-        password: 'valid_password',
-        passwordConfirmation: 'valid_password'
-      }
-    }
-    const httpResponse = await systemUnderTest.handle(httpRequest)
+    const httpResponse = await systemUnderTest.handle(makeFakeRequest())
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toEqual({
       id: 'valid_id',
