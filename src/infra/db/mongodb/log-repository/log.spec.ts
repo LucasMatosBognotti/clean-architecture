@@ -4,6 +4,10 @@ import { LogMongoRepository } from './log'
 
 const MONGO_URL = process.env.MONGO_URL ?? 'mongodb://localhost:27017/clean-architecture'
 
+const makeSystemUnderTest = (): LogMongoRepository => {
+  return new LogMongoRepository()
+}
+
 describe('Log Error Mongo Repository', () => {
   let errorCollection: Collection
 
@@ -21,7 +25,7 @@ describe('Log Error Mongo Repository', () => {
   })
 
   test('Should create an error log on success', async () => {
-    const systemUnderTest = new LogMongoRepository()
+    const systemUnderTest = makeSystemUnderTest()
     await systemUnderTest.logError('any_error')
     const count = await errorCollection.countDocuments()
     expect(count).toBe(1)
