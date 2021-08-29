@@ -1,15 +1,27 @@
 import { MissingParamError } from '../../errors'
+import { EmailValidator } from '../signup/signup-protocols'
 import { SignInController } from './signin'
 
 interface SystemUnderTestTypes {
   systemUnderTest: SignInController
+  emailValidatorStub: EmailValidator
+}
+
+const makeEmailValidator = (): EmailValidator => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid (email: string): boolean {
+      return true
+    }
+  }
+  return new EmailValidatorStub()
 }
 
 const makeSystemUnderTest = (): SystemUnderTestTypes => {
-  const systemUnderTest = new SignInController()
-
+  const emailValidatorStub = makeEmailValidator()
+  const systemUnderTest = new SignInController(emailValidatorStub)
   return {
-    systemUnderTest
+    systemUnderTest,
+    emailValidatorStub
   }
 }
 
@@ -36,5 +48,18 @@ describe('SignIn Controller', () => {
     const httpResponse = await systemUnderTest.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingParamError('password'))
+  })
+
+  test('Should call EmailValidator with correct email', async () => {
+    const { systemUnderTest, emailValidatorStub } = makeSystemUnderTest()
+    const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
+    const httpRequest = {
+      body: {
+        email: 'any_email@mail.com',
+        password: 'any_password'
+      }
+    }
+    await systemUnderTest.handle(httpRequest)
+    expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
 })
