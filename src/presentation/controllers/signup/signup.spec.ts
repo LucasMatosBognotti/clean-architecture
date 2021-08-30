@@ -1,5 +1,5 @@
 import { SignUpController } from './signup'
-import { EmailValidator, AddAccount, AddAccountModel, AccountModel } from './signup-protocols'
+import { EmailValidator, AddAccount, AddAccountModel, AccountModel, Validation } from './signup-protocols'
 import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
 import { HttpRequest } from '../../protocols'
 
@@ -7,6 +7,7 @@ interface SystemUnderTestTypes {
   systemUnderTest: SignUpController
   emailValidatorStub: EmailValidator
   addAccountStub: AddAccount
+  validationStub: Validation
 }
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -42,15 +43,26 @@ const makeEmailValidator = (): EmailValidator => {
   return new EmailValidatorStub()
 }
 
+const makeValidation = (): Validation => {
+  class ValidationStub implements Validation {
+    validate (input: any): any {
+      return null
+    }
+  }
+  return new ValidationStub()
+}
+
 const makeSystemUnderTest = (): SystemUnderTestTypes => {
   const emailValidatorStub = makeEmailValidator()
   const addAccountStub = makeAddAccount()
-  const systemUnderTest = new SignUpController(emailValidatorStub, addAccountStub)
+  const validationStub = makeValidation()
+  const systemUnderTest = new SignUpController(emailValidatorStub, addAccountStub, validationStub)
 
   return {
     systemUnderTest,
     emailValidatorStub,
-    addAccountStub
+    addAccountStub,
+    validationStub
   }
 }
 
@@ -190,5 +202,13 @@ describe('SignUp Controller', () => {
       email: 'valid_email',
       password: 'valid_password'
     })
+  })
+
+  test('Should call Validation with correct value', async () => {
+    const { systemUnderTest, validationStub } = makeSystemUnderTest()
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+    const httpRequest = makeFakeRequest()
+    await systemUnderTest.handle(httpRequest)
+    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
   })
 })
