@@ -109,4 +109,12 @@ describe('SignIn Controller', () => {
     expect(httpResponse.statusCode).toBe(401)
     expect(httpResponse.body).toEqual(new UnathorizedError())
   })
+
+  test('Should return 500 if Authentication throws', async () => {
+    const { systemUnderTest, authenticationStub } = makeSystemUnderTest()
+    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const httpResponse = await systemUnderTest.handle(makeFakeRequest())
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
+  })
 })
