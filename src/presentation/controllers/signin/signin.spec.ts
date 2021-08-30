@@ -1,6 +1,5 @@
-import { Authentication } from '../../../domain/usecases/authentication'
+import { HttpRequest, EmailValidator, Authentication } from './signin-protocols'
 import { InvalidParamError, MissingParamError, ServerError, UnathorizedError } from '../../errors'
-import { EmailValidator, HttpRequest } from '../signup/signup-protocols'
 import { SignInController } from './signin'
 
 interface SystemUnderTestTypes {
