@@ -1,6 +1,6 @@
 import { Controller, HttpRequest, HttpResponse, EmailValidator, Authentication } from './signin-protocols'
 import { InvalidParamError, MissingParamError } from '../../errors'
-import { badRequest, serverError, unauthorized } from '../../helpers/http-helper'
+import { badRequest, serverError, successRequest, unauthorized } from '../../helpers/http-helper'
 
 export class SignInController implements Controller {
   private readonly emailValidator: EmailValidator
@@ -33,7 +33,7 @@ export class SignInController implements Controller {
         return unauthorized()
       }
 
-      return new Promise(resolve => resolve(badRequest(new MissingParamError('email'))))
+      return successRequest({ accessToken })
     } catch (err) {
       return serverError(err)
     }
