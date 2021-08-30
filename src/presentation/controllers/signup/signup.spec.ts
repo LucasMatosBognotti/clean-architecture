@@ -67,21 +67,6 @@ const makeSystemUnderTest = (): SystemUnderTestTypes => {
 }
 
 describe('SignUp Controller', () => {
-  test('Should return 400 if password confirmation fails', async () => {
-    const { systemUnderTest } = makeSystemUnderTest()
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_password',
-        passwordConfirmation: 'invalid_password'
-      }
-    }
-    const httpResponse = await systemUnderTest.handle(httpRequest)
-    expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new InvalidParamError('passwordConfirmation'))
-  })
-
   test('Should return 400 if an invalid email is provided', async () => {
     const { systemUnderTest, emailValidatorStub } = makeSystemUnderTest()
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
