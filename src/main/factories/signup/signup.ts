@@ -9,9 +9,9 @@ import { makeSignUpValidation } from './signup-validation'
 
 export const makeSignUpController = (): Controller => {
   const salt = 12
-  const encrypter = new BCryptAdapter(salt)
+  const hasher = new BCryptAdapter(salt)
   const addAccountRepository = new AccountMongoRepository()
-  const addAccount = new DbAddAccount(encrypter, addAccountRepository)
+  const addAccount = new DbAddAccount(hasher, addAccountRepository)
   const validation = makeSignUpValidation()
   const signUpController = new SignUpController(addAccount, validation)
   const logMongoRepository = new LogMongoRepository()
