@@ -52,4 +52,11 @@ describe('DbAuthentication UseCase', () => {
     const promise = systemUnderTest.auth(makeFakeAuthentication())
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should return undefined of LoadAccountByEmailRepository returns undefined', async () => {
+    const { systemUnderTest, loadAccountByEmailRepositoryStub } = makeSystemUnderTest()
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'load').mockReturnValueOnce(new Promise(resolve => resolve(undefined)))
+    const accessToken = await systemUnderTest.auth(makeFakeAuthentication())
+    expect(accessToken).toBeUndefined()
+  })
 })
