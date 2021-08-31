@@ -52,4 +52,10 @@ describe('Account MongoDB Repository', () => {
     expect(account.email).toBe('any_email@mail.com')
     expect(account.password).toBe('any_password')
   })
+
+  test('Should return undefined if loadByEmail fails', async () => {
+    const systemUnderTest = makeSystemUnderTest()
+    const account = await systemUnderTest.loadByEmail('any_email@mail.com')
+    expect(account).toBeFalsy()
+  })
 })
