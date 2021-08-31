@@ -32,7 +32,6 @@ describe('BCrypt Adaptar', () => {
 
   test('Should throw if bcrypt throws', async () => {
     const systemUnderTest = makeSystemUnderTest()
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     jest.spyOn(bcrypt, 'hash').mockImplementation(async () => await Promise.reject(new Error()))
     const promise = systemUnderTest.hash('any_value')
     await expect(promise).rejects.toThrow()
@@ -49,5 +48,12 @@ describe('BCrypt Adaptar', () => {
     const systemUnderTest = makeSystemUnderTest()
     const isValid = await systemUnderTest.compare('any_value', 'any_hash')
     expect(isValid).toBe(true)
+  })
+
+  test('Should return false when compare fails', async () => {
+    const systemUnderTest = makeSystemUnderTest()
+    jest.spyOn(bcrypt, 'compare').mockImplementationOnce(async (): Promise<boolean> => await new Promise(resolve => resolve(false)))
+    const isValid = await systemUnderTest.compare('any_value', 'any_hash')
+    expect(isValid).toBe(false)
   })
 })
