@@ -30,7 +30,7 @@ describe('BCrypt Adaptar', () => {
     expect(hash).toBe('hash')
   })
 
-  test('Should throw if bcrypt throws', async () => {
+  test('Should throw if hash throws', async () => {
     const systemUnderTest = makeSystemUnderTest()
     jest.spyOn(bcrypt, 'hash').mockImplementation(async () => await Promise.reject(new Error()))
     const promise = systemUnderTest.hash('any_value')
@@ -55,5 +55,12 @@ describe('BCrypt Adaptar', () => {
     jest.spyOn(bcrypt, 'compare').mockImplementationOnce(async (): Promise<boolean> => await new Promise(resolve => resolve(false)))
     const isValid = await systemUnderTest.compare('any_value', 'any_hash')
     expect(isValid).toBe(false)
+  })
+
+  test('Should throw if compare throws', async () => {
+    const systemUnderTest = makeSystemUnderTest()
+    jest.spyOn(bcrypt, 'compare').mockImplementation(async () => await Promise.reject(new Error()))
+    const promise = systemUnderTest.compare('any_value', 'any_hash')
+    await expect(promise).rejects.toThrow()
   })
 })
