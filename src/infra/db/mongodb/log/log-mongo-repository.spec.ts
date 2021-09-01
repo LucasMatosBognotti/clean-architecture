@@ -1,6 +1,6 @@
 import { Collection } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
-import { LogMongoRepository } from './log'
+import { LogMongoRepository } from './log-mongo-repository'
 
 const MONGO_URL = process.env.MONGO_URL ?? 'mongodb://localhost:27017/clean-architecture'
 

@@ -1,6 +1,6 @@
-import { HttpRequest, Authentication, Validation } from './signin-protocols'
+import { HttpRequest, Authentication, Validation } from './signin-controller-protocols'
 import { MissingParamError, ServerError, UnathorizedError } from '../../errors'
-import { SignInController } from './signin'
+import { SignInController } from './signin-controller'
 import { AuthenticationModel } from '../../../domain/usecases/authentication'
 
 interface SystemUnderTestTypes {
