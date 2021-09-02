@@ -1,10 +1,10 @@
-FROM node:latest
+FROM node:lts-alpine
 
 WORKDIR /usr/app
 
 COPY package.json ./
 
-RUN apt update && apt upgrade -y
+#RUN apt update && apt upgrade -y
 
 RUN yarn
 
