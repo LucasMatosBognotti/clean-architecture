@@ -23,7 +23,7 @@ export class SignInController implements Controller {
       }
       return successRequest({ accessToken })
     } catch (err) {
-      return serverError(err)
+      return serverError(err as Error)
     }
   }
 }
