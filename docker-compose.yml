@@ -4,7 +4,7 @@ services:
   app:
     build: .
     image: clean
-    container_name: clean-architecture
+    container_name: clean
     restart: always
     environment:
       - MONGO_URL=mongodb://mongo:27017/clean-architecture
@@ -16,10 +16,10 @@ services:
       - mongo
 
   mongo:
-    image: mongo
-    container_name: mongodb
+    image: mongo:4.0
+    container_name: mongo
     restart: always
     volumes:
-      - ./data:/data/db
+      - ./database:/data/db
     ports:
       - 27017:27017
