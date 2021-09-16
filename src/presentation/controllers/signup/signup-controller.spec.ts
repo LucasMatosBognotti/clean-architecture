@@ -1,5 +1,5 @@
 import { SignUpController } from './signup-controller'
-import { AddAccount, AddAccountModel, AccountModel, Validation } from './signup-controller-protocols'
+import { AddAccount, AddAccountModel, AccountModel, Validation, Authentication, AuthenticationModel } from './signup-controller-protocols'
 import { MissingParamError, ServerError } from '../../errors'
 import { HttpRequest } from '../../protocols'
 
@@ -7,6 +7,7 @@ interface SystemUnderTestTypes {
   systemUnderTest: SignUpController
   addAccountStub: AddAccount
   validationStub: Validation
+  authenticationStub: Authentication
 }
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -42,15 +43,27 @@ const makeValidation = (): Validation => {
   return new ValidationStub()
 }
 
+const makeAuthentication = (): Authentication => {
+  class AuthenticationStub implements Authentication {
+    async auth (authentication: AuthenticationModel): Promise<string> {
+      return new Promise(resolve => resolve('any_token'))
+    }
+  }
+
+  return new AuthenticationStub()
+}
+
 const makeSystemUnderTest = (): SystemUnderTestTypes => {
   const addAccountStub = makeAddAccount()
   const validationStub = makeValidation()
-  const systemUnderTest = new SignUpController(addAccountStub, validationStub)
+  const authenticationStub = makeAuthentication()
+  const systemUnderTest = new SignUpController(addAccountStub, validationStub, authenticationStub)
 
   return {
     systemUnderTest,
     addAccountStub,
-    validationStub
+    validationStub,
+    authenticationStub
   }
 }
 
@@ -101,5 +114,12 @@ describe('SignUp Controller', () => {
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_field'))
     const httpResponse = await systemUnderTest.handle(makeFakeRequest())
     expect(httpResponse.body).toEqual(new MissingParamError('any_field'))
+  })
+
+  test('Should call Authetication with correct values', async () => {
+    const { systemUnderTest, authenticationStub } = makeSystemUnderTest()
+    const authSpy = jest.spyOn(authenticationStub, 'auth')
+    await systemUnderTest.handle(makeFakeRequest())
+    expect(authSpy).toHaveBeenCalledWith({ email: 'any_email@mail.com', password: 'any_password' })
   })
 })
