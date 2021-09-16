@@ -93,12 +93,7 @@ describe('SignUp Controller', () => {
     const { systemUnderTest } = makeSystemUnderTest()
     const httpResponse = await systemUnderTest.handle(makeFakeRequest())
     expect(httpResponse.statusCode).toBe(200)
-    expect(httpResponse.body).toEqual({
-      id: 'valid_id',
-      name: 'valid_name',
-      email: 'valid_email',
-      password: 'valid_password'
-    })
+    expect(httpResponse.body).toEqual({ accessToken: 'any_token' })
   })
 
   test('Should call Validation with correct value', async () => {
