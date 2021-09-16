@@ -122,4 +122,12 @@ describe('SignUp Controller', () => {
     await systemUnderTest.handle(makeFakeRequest())
     expect(authSpy).toHaveBeenCalledWith({ email: 'any_email@mail.com', password: 'any_password' })
   })
+
+  test('Should return 500 if Authentication throws', async () => {
+    const { systemUnderTest, authenticationStub } = makeSystemUnderTest()
+    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const httpRequest = await systemUnderTest.handle(makeFakeRequest())
+    expect(httpRequest.statusCode).toBe(500)
+    expect(httpRequest.body).toEqual(new ServerError())
+  })
 })
