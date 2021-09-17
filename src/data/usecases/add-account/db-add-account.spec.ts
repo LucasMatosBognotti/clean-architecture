@@ -108,6 +108,15 @@ describe('DbAddAccount UseCase', () => {
     expect(account).toEqual(makeFakeAccount())
   })
 
+  /*
+  test('Should return null if LoadAccountByEmailRepository not return null', async () => {
+    const { systemUnderTest, loadAccountByEmailRepositoryStub } = makeSystemUnderTest()
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockReturnValueOnce(new Promise(resolve => resolve(makeFakeAccount())))
+    const account = await systemUnderTest.add(makeFakeAccountData())
+    expect(account).toEqual(makeFakeAccount())
+  })
+  */
+
   test('Should call loadAccountByEmailRepository with correct email', async () => {
     const { systemUnderTest, loadAccountByEmailRepositoryStub } = makeSystemUnderTest()
     const loadSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
