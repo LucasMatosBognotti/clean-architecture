@@ -87,7 +87,6 @@ describe('DbAddAccount UseCase', () => {
     const { systemUnderTest, addAccountRepositoryStub } = makeSystemUnderTest()
     const addSky = jest.spyOn(addAccountRepositoryStub, 'add')
     await systemUnderTest.add(makeFakeAccountData())
-    console.log(addSky)
     expect(addSky).toHaveBeenCalledWith({
       name: 'valid_name',
       email: 'valid_email@mail.com',
