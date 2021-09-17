@@ -1,6 +1,6 @@
 import { HttpRequest, Validation, AddSurvey } from './add-survey-controller-protocols'
 import { AddSurveyController } from './add-survey-controller'
-import { badRequest, serverError } from '../../helpers/http/http-helper'
+import { badRequest, noContent, serverError } from '../../helpers/http/http-helper'
 
 interface SystemUnderTestTypes {
   systemUnderTest: AddSurveyController
@@ -79,5 +79,11 @@ describe('AddSuvey Controller', () => {
     jest.spyOn(addSurveyStub, 'add').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const httpResponse = await systemUnderTest.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 204 on success', async () => {
+    const { systemUnderTest } = makeSystemUnderTest()
+    const httpResponse = await systemUnderTest.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(noContent())
   })
 })
