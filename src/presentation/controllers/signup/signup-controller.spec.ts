@@ -89,6 +89,14 @@ describe('SignUp Controller', () => {
     })
   })
 
+  /*  test('Should return 403 if AddAccount returns null', async () => {
+    const { systemUnderTest, addAccountStub } = makeSystemUnderTest()
+    jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(new Promise((resolve, reject) => reject(false)))
+    const httpRequest = await systemUnderTest.handle(makeFakeRequest())
+    expect(httpRequest.statusCode).toBe(403)
+    expect(httpRequest.body).toEqual(new EmailInUseError())
+  }) */
+
   test('Should return 200 if valid data is provided', async () => {
     const { systemUnderTest } = makeSystemUnderTest()
     const httpResponse = await systemUnderTest.handle(makeFakeRequest())
