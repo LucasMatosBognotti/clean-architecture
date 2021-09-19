@@ -1,6 +1,6 @@
 import { LoadAccountByToken } from '../../domain/usecases/load-account-by-token'
 import { AccessDeniedError } from '../errors'
-import { forbidden, successRequest } from '../helpers/http/http-helper'
+import { forbidden, serverError, successRequest } from '../helpers/http/http-helper'
 import { AuthMiddleware } from './auth-middleware'
 
 interface SystemUnderTestTypes {
@@ -52,5 +52,12 @@ describe('Auth Middleware', () => {
     const { systemUnderTest } = makeSystemUnderTest()
     const httpResponse = await systemUnderTest.handle({ headers: { 'x-access-token': 'any_token' } })
     expect(httpResponse).toEqual(successRequest({ id: 'valid_id' }))
+  })
+
+  test('Should return 500 if LoadAccountByToken throws', async () => {
+    const { systemUnderTest, loadAccountByTokenStub } = makeSystemUnderTest()
+    jest.spyOn(loadAccountByTokenStub, 'load').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const httpResponse = await systemUnderTest.handle({ headers: { 'x-access-token': 'any_token' } })
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
