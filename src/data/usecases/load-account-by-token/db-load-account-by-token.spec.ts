@@ -1,9 +1,11 @@
 import { Decrypter } from '../../protocols/cryptography/decrypter'
+import { LoadAccountByTokenRepository } from '../../protocols/db/account/load-account-by-token-repository'
 import { DbLoadAccountByToken } from './db-load-account-by-token'
 
 interface SystemUnderTestTypes {
   systemUnderTest: DbLoadAccountByToken
   decrypterStub: Decrypter
+  loadAccountByTokenRepositoryStub: LoadAccountByTokenRepository
 }
 
 const makeDecrypter = (): Decrypter => {
@@ -16,12 +18,23 @@ const makeDecrypter = (): Decrypter => {
   return new DecrypterStub()
 }
 
+const makeLoadAccountByTokenRepository = (): LoadAccountByTokenRepository => {
+  class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
+    async loadByToken (token: string, role?: string): Promise<LoadAccountByTokenRepository.Result> {
+      return new Promise(resolve => resolve({ id: 'valid_id' }))
+    }
+  }
+  return new LoadAccountByTokenRepositoryStub()
+}
+
 const makeSystemUnderTest = (): SystemUnderTestTypes => {
   const decrypterStub = makeDecrypter()
-  const systemUnderTest = new DbLoadAccountByToken(decrypterStub)
+  const loadAccountByTokenRepositoryStub = makeLoadAccountByTokenRepository()
+  const systemUnderTest = new DbLoadAccountByToken(decrypterStub, loadAccountByTokenRepositoryStub)
   return {
     systemUnderTest,
-    decrypterStub
+    decrypterStub,
+    loadAccountByTokenRepositoryStub
   }
 }
 
@@ -39,4 +52,11 @@ describe('DbLoadAccountByToken UseCase', () => {
     const account = await systemUnderTest.load('any_token', 'any_role')
     expect(account).toBeNull()
   }) */
+
+  test('Should call LoadAccountByTokenRepository with correct values', async () => {
+    const { systemUnderTest, loadAccountByTokenRepositoryStub } = makeSystemUnderTest()
+    const loadByTokenSpy = jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
+    await systemUnderTest.load('any_token', 'any_role')
+    expect(loadByTokenSpy).toHaveBeenCalledWith('any_token', 'any_role')
+  })
 })
