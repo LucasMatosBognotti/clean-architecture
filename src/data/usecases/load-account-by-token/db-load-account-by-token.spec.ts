@@ -11,7 +11,7 @@ interface SystemUnderTestTypes {
 const makeDecrypter = (): Decrypter => {
   class DecrypterStub implements Decrypter {
     async decrypt (ciphertext: string): Promise<string> {
-      return new Promise(resolve => resolve('an_value'))
+      return await new Promise(resolve => resolve('any_value'))
     }
   }
 
@@ -66,4 +66,10 @@ describe('DbLoadAccountByToken UseCase', () => {
     const account = await systemUnderTest.load('any_token', 'any_role')
     expect(account).toBeNull()
   }) */
+
+  test('Should return an account on success', async () => {
+    const { systemUnderTest } = makeSystemUnderTest()
+    const account = await systemUnderTest.load('any_token', 'any_role')
+    expect(account).toEqual({ id: 'valid_id' })
+  })
 })
