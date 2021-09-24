@@ -1,4 +1,5 @@
 import MockDate from 'mockdate'
+import { ServerError } from '../../errors'
 import { LoadSurveysController } from './load-surveys-controller'
 import { LoadSurveys, SurveyModel } from './load-surveys-controller-protocols'
 
@@ -71,5 +72,13 @@ describe('LoadSurveys Controller', () => {
     const httpResponse = await systemUnderTest.handle(mockRequest())
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toEqual(makeFakeSurveys())
+  })
+
+  test('Should return 500 if LoadSurveys throws', async () => {
+    const { systemUnderTest, loadSurveysStub } = makeLoadSurveysController()
+    jest.spyOn(loadSurveysStub, 'load').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const httpResponse = await systemUnderTest.handle(mockRequest())
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 })
