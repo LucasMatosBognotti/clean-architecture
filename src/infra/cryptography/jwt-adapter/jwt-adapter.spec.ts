@@ -51,5 +51,12 @@ describe('JWT Adapter', () => {
       const value = await systemUnderTest.decrypt('any_token')
       expect(value).toBe('any_value')
     })
+
+    it('Should throw if verify throws', async () => {
+      const systemUnderTest = makeSystemUnderTest()
+      jest.spyOn(jwt, 'verify').mockImplementation(() => { throw new Error() })
+      const promise = systemUnderTest.decrypt('any_token')
+      await expect(promise).rejects.toThrow()
+    })
   })
 })
