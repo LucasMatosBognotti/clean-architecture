@@ -24,7 +24,7 @@ describe('Account MongoDB Repository', () => {
     return new AccountMongoRepository()
   }
 
-  describe('add', () => {
+  describe('add()', () => {
     test('Should return an account on add success', async () => {
       const systemUnderTest = makeSystemUnderTest()
       const account = await systemUnderTest.add({
@@ -40,7 +40,7 @@ describe('Account MongoDB Repository', () => {
     })
   })
 
-  describe('loadByEmail', () => {
+  describe('loadByEmail()', () => {
     test('Should return an account on loadByEmail success', async () => {
       const systemUnderTest = makeSystemUnderTest()
       await accountCollection.insertOne({
@@ -63,7 +63,7 @@ describe('Account MongoDB Repository', () => {
     })
   })
 
-  describe('updateAccessToken', () => {
+  describe('updateAccessToken()', () => {
     test('Should update the account accessToken on updateAccessToken success', async () => {
       const systemUnderTest = makeSystemUnderTest()
       const res = await accountCollection.insertOne({
@@ -77,6 +77,21 @@ describe('Account MongoDB Repository', () => {
       const account = await accountCollection.findOne({ _id: fakeAccount._id })
       expect(account).toBeTruthy()
       expect(account.accessToken).toBe('any_token')
+    })
+  })
+
+  describe('loadByToken()', () => {
+    it('Should return an account on loadByToken without role', async () => {
+      const systemUnderTest = makeSystemUnderTest()
+      await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        accessToken: 'any_token'
+      })
+      const account = await systemUnderTest.loadByToken('any_token')
+      expect(account).toBeTruthy()
+      expect(account.id).toBeTruthy()
     })
   })
 })
