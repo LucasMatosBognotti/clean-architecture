@@ -38,7 +38,7 @@ describe('Auth Middleware', () => {
     const role = 'any_role'
     const { systemUnderTest, loadAccountByTokenStub } = makeSystemUnderTest(role)
     const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
-    await systemUnderTest.handle({ headers: { 'x-access-token': 'any_token' } })
+    await systemUnderTest.handle({ accessToken: 'any_token' })
     expect(loadSpy).toHaveBeenCalledWith('any_token', role)
   })
 
@@ -51,14 +51,14 @@ describe('Auth Middleware', () => {
 
   test('Should return 200 if LoadAccuntByToken returns as account', async () => {
     const { systemUnderTest } = makeSystemUnderTest()
-    const httpResponse = await systemUnderTest.handle({ headers: { 'x-access-token': 'any_token' } })
+    const httpResponse = await systemUnderTest.handle({ accessToken: 'any_token' })
     expect(httpResponse).toEqual(successRequest({ id: 'valid_id' }))
   })
 
   test('Should return 500 if LoadAccountByToken throws', async () => {
     const { systemUnderTest, loadAccountByTokenStub } = makeSystemUnderTest()
     jest.spyOn(loadAccountByTokenStub, 'load').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-    const httpResponse = await systemUnderTest.handle({ headers: { 'x-access-token': 'any_token' } })
+    const httpResponse = await systemUnderTest.handle({ accessToken: 'any_token' })
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
