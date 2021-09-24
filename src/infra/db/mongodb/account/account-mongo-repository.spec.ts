@@ -107,5 +107,11 @@ describe('Account MongoDB Repository', () => {
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
     })
+
+    it('Should return null if loadByToken fails', async () => {
+      const systemUnderTest = makeSystemUnderTest()
+      const account = await systemUnderTest.loadByToken('any_token')
+      expect(account).toBeFalsy()
+    })
   })
 })
