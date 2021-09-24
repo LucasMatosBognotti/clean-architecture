@@ -38,12 +38,18 @@ describe('JWT Adapter', () => {
     })
   })
 
-  describe('verify', () => {
+  describe('verify()', () => {
     it('Should call verify with correct values', async () => {
       const systemUnderTest = makeSystemUnderTest()
       const verifySpy = jest.spyOn(jwt, 'verify')
       await systemUnderTest.decrypt('any_token')
       expect(verifySpy).toHaveBeenCalledWith('any_token', 'secret')
+    })
+
+    it('Should return a value on verify success', async () => {
+      const systemUnderTest = makeSystemUnderTest()
+      const value = await systemUnderTest.decrypt('any_token')
+      expect(value).toBe('any_value')
     })
   })
 })
