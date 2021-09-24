@@ -2,6 +2,11 @@ import MockDate from 'mockdate'
 import { LoadSurveysController } from './load-surveys-controller'
 import { LoadSurveys, SurveyModel } from './load-surveys-controller-protocols'
 
+interface SystemUnderTestTypes {
+  systemUnderTest: LoadSurveysController
+  loadSurveysStub: LoadSurveys
+}
+
 const mockRequest = (): LoadSurveysController.Request => ({ accountId: 'any_id' })
 
 const makeFakeSurveys = (): SurveyModel[] => {
@@ -27,6 +32,24 @@ const makeFakeSurveys = (): SurveyModel[] => {
   ]
 }
 
+const makeLoadSurveysStub = (): LoadSurveys => {
+  class LoadSurveysStub implements LoadSurveys {
+    async load (): Promise<SurveyModel[]> {
+      return new Promise(resolve => resolve(makeFakeSurveys()))
+    }
+  }
+  return new LoadSurveysStub()
+}
+
+const makeLoadSurveysController = (): SystemUnderTestTypes => {
+  const loadSurveysStub = makeLoadSurveysStub()
+  const systemUnderTest = new LoadSurveysController(loadSurveysStub)
+  return {
+    systemUnderTest,
+    loadSurveysStub
+  }
+}
+
 describe('LoadSurveys Controller', () => {
   beforeAll(() => {
     MockDate.set(new Date())
@@ -37,14 +60,8 @@ describe('LoadSurveys Controller', () => {
   })
 
   test('Should call LoadSurveys', async () => {
-    class LoadSurveysStub implements LoadSurveys {
-      async load (): Promise<SurveyModel[]> {
-        return new Promise(resolve => resolve(makeFakeSurveys()))
-      }
-    }
-    const loadSurveysStub = new LoadSurveysStub()
+    const { systemUnderTest, loadSurveysStub } = makeLoadSurveysController()
     const loadSpy = jest.spyOn(loadSurveysStub, 'load')
-    const systemUnderTest = new LoadSurveysController(loadSurveysStub)
     await systemUnderTest.handle(mockRequest())
     expect(loadSpy).toHaveBeenCalled()
   })
