@@ -32,12 +32,15 @@ describe('Survey Routes', () => {
         .post('/api/surveys')
         .send({
           question: 'Question',
-          answers: [{
-            answer: 'Answer 1',
-            image: 'http://image-name.com'
-          },{
-            answer: 'Answer 2'
-          }]
+          answers: [
+            {
+              answer: 'Answer 1',
+              image: 'http://image-name.com'
+            },
+            {
+              answer: 'Answer 2'
+            }
+          ]
         })
         .expect(403)
     })
@@ -54,19 +57,20 @@ describe('Survey Routes', () => {
       await accountCollection.updateOne({
         _id: id
       }, { $set: { accessToken } })
-      /* const account = await accountCollection.findOne({ _id: id })
-      console.log(account.accessToken === accessToken) */
       await request(app)
         .post('/api/surveys')
         .set('x-access-token', accessToken)
         .send({
           question: 'Question',
-          answers: [{
-            answer: 'Answer 1',
-            image: 'http://image-name.com'
-          },{
-            answer: 'Answer 2'
-          }]
+          answers: [
+            {
+              answer: 'Answer 1',
+              image: 'http://image-name.com'
+            },
+            {
+              answer: 'Answer 2'
+            }
+          ]
         })
         .expect(204)
     })

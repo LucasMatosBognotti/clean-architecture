@@ -28,12 +28,16 @@ describe('Account MongoDB Repository', () => {
     const systemUnderTest = makeSystemUnderTest()
     await systemUnderTest.add({
       question: 'any_question',
-      answers: [{
-        answer: 'any_answer',
-        image: 'any_images'
-      }, {
-        answer: 'any_asnwer'
-      }]
+      answers: [
+        {
+          answer: 'any_answer',
+          image: 'any_images'
+        },
+        {
+          answer: 'any_asnwer'
+        }
+      ],
+      date: new Date()
     })
     const survey = await surveyCollection.findOne({ question: 'any_question' })
     expect(survey).toBeTruthy()
