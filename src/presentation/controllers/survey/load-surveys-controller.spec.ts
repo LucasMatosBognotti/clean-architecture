@@ -65,4 +65,11 @@ describe('LoadSurveys Controller', () => {
     await systemUnderTest.handle(mockRequest())
     expect(loadSpy).toHaveBeenCalled()
   })
+
+  test('Should return 200 on success', async () => {
+    const { systemUnderTest } = makeLoadSurveysController()
+    const httpResponse = await systemUnderTest.handle(mockRequest())
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual(makeFakeSurveys())
+  })
 })
