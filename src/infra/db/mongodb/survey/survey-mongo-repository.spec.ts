@@ -45,7 +45,7 @@ describe('Account MongoDB Repository', () => {
     })
   })
 
-  describe('loadAll', () => {
+  describe('loadAll()', () => {
     it('Should load all surveys on success', async () => {
       await surveyCollection.insertMany([
         {
@@ -79,6 +79,12 @@ describe('Account MongoDB Repository', () => {
       const surveys = await systemUnderTest.loadAll('')
       expect(surveys.length).toBe(2)
       expect(surveys[0].question).toBe('any_question')
+    })
+
+    it('Should load empty list', async () => {
+      const systemUnderTest = makeSystemUnderTest()
+      const surveys = await systemUnderTest.loadAll('')
+      expect(surveys.length).toBe(0)
     })
   })
 })
