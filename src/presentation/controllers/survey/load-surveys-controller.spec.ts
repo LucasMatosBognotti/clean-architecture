@@ -1,8 +1,8 @@
 import MockDate from 'mockdate'
-import { ServerError } from '../../errors'
+import { ServerError } from '@/presentation/errors'
 import { LoadSurveysController } from './load-surveys-controller'
 import { LoadSurveys, SurveyModel } from './load-surveys-controller-protocols'
-import { noContent } from '../../helpers/http/http-helper'
+import { noContent } from '@/presentation/helpers/http/http-helper'
 
 interface SystemUnderTestTypes {
   systemUnderTest: LoadSurveysController

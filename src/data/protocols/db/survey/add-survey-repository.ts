@@ -1,4 +1,4 @@
-import { AddSurvey } from '../../../../domain/usecases/add-survey'
+import { AddSurvey } from '@/domain/usecases/add-survey'
 
 export interface AddSurveyRepository {
   add: (data: AddSurveyRepository.Params) => Promise<void>

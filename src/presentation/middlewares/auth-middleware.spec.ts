@@ -1,6 +1,6 @@
-import { LoadAccountByToken } from '../../domain/usecases/load-account-by-token'
-import { AccessDeniedError } from '../errors'
-import { forbidden, serverError, successRequest } from '../helpers/http/http-helper'
+import { LoadAccountByToken } from '@/domain/usecases/load-account-by-token'
+import { AccessDeniedError } from '@/presentation/errors'
+import { forbidden, serverError, successRequest } from '@/presentation/helpers/http/http-helper'
 import { AuthMiddleware } from './auth-middleware'
 
 interface SystemUnderTestTypes {

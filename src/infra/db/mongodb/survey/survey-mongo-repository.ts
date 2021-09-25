@@ -1,6 +1,6 @@
-import { LoadSurveysRepository } from '../../../../data/protocols/db/survey/load-surveys-repository'
-import { AddSurveyRepository } from '../../../../data/usecases/add-survey/db-add-survey-protocols'
-import { MongoHelper } from '../helpers/mongo-helper'
+import { LoadSurveysRepository } from '@/data/protocols/db/survey/load-surveys-repository'
+import { AddSurveyRepository } from '@/data/usecases/add-survey/db-add-survey-protocols'
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 
 export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository {
   async add (surveyData: AddSurveyRepository.Params): Promise<void> {

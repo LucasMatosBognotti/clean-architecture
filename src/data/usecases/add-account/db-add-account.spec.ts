@@ -1,5 +1,5 @@
-import { Hasher, AddAccountRepository, AddAccountModel, AccountModel, LoadAccountByEmailRepository } from './db-add-account-protocols'
 import { DbAddAccount } from './db-add-account'
+import { Hasher, AddAccountRepository, AddAccountModel, AccountModel, LoadAccountByEmailRepository } from './db-add-account-protocols'
 
 interface SystemUnderTestTypes {
   hasherStub: Hasher

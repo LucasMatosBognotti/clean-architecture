@@ -1,7 +1,7 @@
 import { SignUpController } from './signup-controller'
 import { AddAccount, AddAccountModel, AccountModel, Validation, Authentication, AuthenticationModel } from './signup-controller-protocols'
-import { MissingParamError, ServerError } from '../../errors'
-import { HttpRequest } from '../../protocols'
+import { MissingParamError, ServerError } from '@/presentation/errors'
+import { HttpRequest } from '@/presentation/protocols'
 
 interface SystemUnderTestTypes {
   systemUnderTest: SignUpController
