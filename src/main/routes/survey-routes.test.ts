@@ -10,6 +10,21 @@ const MONGO_URL = process.env.MONGO_URL ?? 'mongodb://localhost:27017/clean-arch
 let surveyCollection: Collection
 let accountCollection: Collection
 
+const makeAccessToken = async (): Promise<string> => {
+  const response = await accountCollection.insertOne({
+    name: 'Lucas',
+    email: 'lucasmatosbognotti@gmail.com',
+    password: '123',
+    role: 'admin'
+  })
+  const id = response.ops[0]._id
+  const accessToken = sign({ id }, env.JWT_SECRET)
+  await accountCollection.updateOne({
+    _id: id
+  }, { $set: { accessToken } })
+  return accessToken
+}
+
 describe('Survey Routes', () => {
   beforeAll(async () => {
     await MongoHelper.connect(MONGO_URL)
@@ -46,17 +61,7 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 204 on add survey with valid accessToken', async () => {
-      const response = await accountCollection.insertOne({
-        name: 'Lucas',
-        email: 'lucasmatosbognotti@gmail.com',
-        password: '123',
-        role: 'admin'
-      })
-      const id = response.ops[0]._id
-      const accessToken = sign({ id }, env.JWT_SECRET)
-      await accountCollection.updateOne({
-        _id: id
-      }, { $set: { accessToken } })
+      const accessToken = await makeAccessToken()
       await request(app)
         .post('/api/surveys')
         .set('x-access-token', accessToken)
@@ -84,16 +89,7 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 200 o load surveys with valid accessToken', async () => {
-      const response = await accountCollection.insertOne({
-        name: 'Lucas',
-        email: 'lucasmatosbognotti@gmail.com',
-        password: '123'
-      })
-      const id = response.ops[0]._id
-      const accessToken = sign({ id }, env.JWT_SECRET)
-      await accountCollection.updateOne({
-        _id: id
-      }, { $set: { accessToken } })
+      const accessToken = await makeAccessToken()
       await surveyCollection.insertMany([
         {
           question: 'any_question',
