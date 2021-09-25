@@ -8,7 +8,7 @@ import {
   AccountModel
 } from './db-authentication.protocols'
 
-interface SystemUnderTestTypes {
+type SystemUnderTestTypes = {
   systemUnderTest: DbAuthentication
   hashComparerStub: HashComparer
   encrypterStub: Encrypter

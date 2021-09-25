@@ -3,7 +3,7 @@ import { SurveyModel } from '@/domain/models/survey'
 import { LoadSurveysRepository } from '@/data/protocols/db/survey/load-surveys-repository'
 import { DbLoadSurveys } from './db-load-surveys'
 
-interface SysTemUnderTestTypes {
+type SystemUnderTestTypes = {
   systemUnderTest: DbLoadSurveys
   loadSurveysRepositoryStub: LoadSurveysRepository
 }
@@ -40,7 +40,7 @@ const makeLoadSurveysRepository = (): LoadSurveysRepository => {
   return new LoadSurveysRepositoryStub()
 }
 
-const makeSystemUnderTest = (): SysTemUnderTestTypes => {
+const makeSystemUnderTest = (): SystemUnderTestTypes => {
   const loadSurveysRepositoryStub = makeLoadSurveysRepository()
   const systemUnderTest = new DbLoadSurveys(loadSurveysRepositoryStub)
   return {

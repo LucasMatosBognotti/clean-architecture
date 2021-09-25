@@ -1,7 +1,7 @@
 import { DbAddAccount } from './db-add-account'
 import { Hasher, AddAccountRepository, AddAccountModel, AccountModel, LoadAccountByEmailRepository } from './db-add-account-protocols'
 
-interface SystemUnderTestTypes {
+type SystemUnderTestTypes = {
   hasherStub: Hasher
   systemUnderTest: DbAddAccount
   addAccountRepositoryStub: AddAccountRepository

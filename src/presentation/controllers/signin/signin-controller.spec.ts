@@ -3,7 +3,7 @@ import { MissingParamError, ServerError, UnathorizedError } from '@/presentation
 import { SignInController } from './signin-controller'
 import { AuthenticationModel } from '@/domain/usecases/authentication'
 
-interface SystemUnderTestTypes {
+type SystemUnderTestTypes = {
   systemUnderTest: SignInController
   validationStub: Validation
   authenticationStub: Authentication

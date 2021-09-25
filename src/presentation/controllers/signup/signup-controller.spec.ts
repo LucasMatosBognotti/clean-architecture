@@ -3,7 +3,7 @@ import { AddAccount, AddAccountModel, AccountModel, Validation, Authentication, 
 import { MissingParamError, ServerError } from '@/presentation/errors'
 import { HttpRequest } from '@/presentation/protocols'
 
-interface SystemUnderTestTypes {
+type SystemUnderTestTypes = {
   systemUnderTest: SignUpController
   addAccountStub: AddAccount
   validationStub: Validation

@@ -3,7 +3,7 @@ import { serverError } from '@/presentation/helpers/http/http-helper'
 import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols'
 import { LogControllerDecorator } from './log-controller-decorator'
 
-interface SystemUnderTest {
+type SystemUnderTestType = {
   controllerStub: Controller
   systemUnderTest: LogControllerDecorator
   logErrorRepositoryStub: LogErrorRepository
@@ -48,7 +48,7 @@ const makeController = (): Controller => {
   return new ControllerStub()
 }
 
-const makeSystemUnderTest = (): SystemUnderTest => {
+const makeSystemUnderTest = (): SystemUnderTestType => {
   const controllerStub = makeController()
   const logErrorRepositoryStub = makeLogErrorRepository()
   const systemUnderTest = new LogControllerDecorator(controllerStub, logErrorRepositoryStub)

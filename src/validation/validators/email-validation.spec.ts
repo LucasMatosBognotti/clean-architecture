@@ -2,7 +2,7 @@ import { InvalidParamError } from '@/presentation/errors'
 import { EmailValidator } from '@/validation/protocols/email-validator'
 import { EmailValidation } from './email-validation'
 
-interface SystemUnderTestTypes {
+type SystemUnderTestTypes = {
   systemUnderTest: EmailValidation
   emailValidatorStub: EmailValidator
 }

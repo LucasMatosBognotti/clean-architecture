@@ -3,7 +3,7 @@ import { HttpRequest, Validation, AddSurvey } from './add-survey-controller-prot
 import { AddSurveyController } from './add-survey-controller'
 import { badRequest, noContent, serverError } from '@/presentation/helpers/http/http-helper'
 
-interface SystemUnderTestTypes {
+type SystemUnderTestTypes = {
   systemUnderTest: AddSurveyController
   validationStub: Validation
   addSurveyStub: AddSurvey

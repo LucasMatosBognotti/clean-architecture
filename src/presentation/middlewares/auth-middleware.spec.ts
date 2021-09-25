@@ -3,7 +3,7 @@ import { AccessDeniedError } from '@/presentation/errors'
 import { forbidden, serverError, successRequest } from '@/presentation/helpers/http/http-helper'
 import { AuthMiddleware } from './auth-middleware'
 
-interface SystemUnderTestTypes {
+type SystemUnderTestTypes = {
   systemUnderTest: AuthMiddleware
   loadAccountByTokenStub: LoadAccountByToken
 }

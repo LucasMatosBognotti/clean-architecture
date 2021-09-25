@@ -4,7 +4,7 @@ import { LoadSurveysController } from './load-surveys-controller'
 import { LoadSurveys, SurveyModel } from './load-surveys-controller-protocols'
 import { noContent } from '@/presentation/helpers/http/http-helper'
 
-interface SystemUnderTestTypes {
+type SystemUnderTestTypes = {
   systemUnderTest: LoadSurveysController
   loadSurveysStub: LoadSurveys
 }

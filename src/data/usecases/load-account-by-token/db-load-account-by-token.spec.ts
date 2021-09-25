@@ -2,7 +2,7 @@ import { Decrypter } from '@/data/protocols/cryptography/decrypter'
 import { LoadAccountByTokenRepository } from '@/data/protocols/db/account/load-account-by-token-repository'
 import { DbLoadAccountByToken } from './db-load-account-by-token'
 
-interface SystemUnderTestTypes {
+type SystemUnderTestTypes = {
   systemUnderTest: DbLoadAccountByToken
   decrypterStub: Decrypter
   loadAccountByTokenRepositoryStub: LoadAccountByTokenRepository

@@ -2,7 +2,7 @@ import MockDate from 'mockdate'
 import { DbAddSurvey } from './db-add-survey'
 import { AddSurvey, AddSurveyRepository } from './db-add-survey-protocols'
 
-interface SystemUnderTestTypes {
+type SystemUnderTestTypes = {
   systemUnderTest: DbAddSurvey
   addSurveyRepositoryStub: AddSurveyRepository
 }
