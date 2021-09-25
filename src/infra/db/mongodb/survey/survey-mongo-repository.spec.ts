@@ -6,6 +6,10 @@ const MONGO_URL = process.env.MONGO_URL ?? 'mongodb://localhost:27017/clean-arch
 
 let surveyCollection: Collection
 
+const makeSystemUnderTest = (): SurveyMongoRepository => {
+  return new SurveyMongoRepository()
+}
+
 describe('Account MongoDB Repository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(MONGO_URL)
@@ -20,26 +24,24 @@ describe('Account MongoDB Repository', () => {
     await surveyCollection.deleteMany({})
   })
 
-  const makeSystemUnderTest = (): SurveyMongoRepository => {
-    return new SurveyMongoRepository()
-  }
-
-  test('Should add a survey on success', async () => {
-    const systemUnderTest = makeSystemUnderTest()
-    await systemUnderTest.add({
-      question: 'any_question',
-      answers: [
-        {
-          answer: 'any_answer',
-          image: 'any_images'
-        },
-        {
-          answer: 'any_asnwer'
-        }
-      ],
-      date: new Date()
+  describe('add()', () => {
+    test('Should add a survey on success', async () => {
+      const systemUnderTest = makeSystemUnderTest()
+      await systemUnderTest.add({
+        question: 'any_question',
+        answers: [
+          {
+            answer: 'any_answer',
+            image: 'any_images'
+          },
+          {
+            answer: 'any_asnwer'
+          }
+        ],
+        date: new Date()
+      })
+      const survey = await surveyCollection.findOne({ question: 'any_question' })
+      expect(survey).toBeTruthy()
     })
-    const survey = await surveyCollection.findOne({ question: 'any_question' })
-    expect(survey).toBeTruthy()
   })
 })
