@@ -67,4 +67,10 @@ describe('DbSaveSurveyResult UseCase', () => {
     const promise = systemUnderTest.save(makeFakeSurveyResultData())
     await expect(promise).rejects.toThrow()
   })
+
+  it('Should return SurveyResult on success', async () => {
+    const { systemUnderTest } = makeSystemUnderTest()
+    const surveyResult = await systemUnderTest.save(makeFakeSurveyResultData())
+    expect(surveyResult).toEqual(makeFakeSurveyResult())
+  })
 })
