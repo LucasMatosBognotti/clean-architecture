@@ -37,7 +37,7 @@ const makeSystemUnderTest = (): SystemUnderTestTypes => {
   }
 }
 
-describe('DbLoadSurveyById', () => {
+describe('DbLoadSurveyById UseCase', () => {
   beforeAll(() => {
     MockDate.set(new Date())
   })
