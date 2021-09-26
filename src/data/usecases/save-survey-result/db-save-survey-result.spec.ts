@@ -52,11 +52,19 @@ describe('DbSaveSurveyResult UseCase', () => {
   afterAll(() => {
     MockDate.reset()
   })
+
   it('Should call SaveSurveyResultRepository with correct values', async () => {
     const { systemUnderTest, saveSurveyResultRepositoryStub } = makeSystemUnderTest()
     const saveSpy = jest.spyOn(saveSurveyResultRepositoryStub, 'save')
     const surveyResulData = makeFakeSurveyResultData()
     await systemUnderTest.save(surveyResulData)
     expect(saveSpy).toHaveBeenCalledWith(surveyResulData)
+  })
+
+  it('Should throw if SaveSurveyResultRepository throws', async () => {
+    const { systemUnderTest, saveSurveyResultRepositoryStub } = makeSystemUnderTest()
+    jest.spyOn(saveSurveyResultRepositoryStub, 'save').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const promise = systemUnderTest.save(makeFakeSurveyResultData())
+    await expect(promise).rejects.toThrow()
   })
 })
