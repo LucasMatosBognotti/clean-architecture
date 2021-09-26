@@ -1,4 +1,4 @@
-import { ServerError } from '@/presentation/errors'
+import { InvalidParamError, ServerError } from '@/presentation/errors'
 import { SaveSurveyResultController } from './save-survey-result-controller'
 import { SurveyModel, LoadSurveyById } from './save-survey-result-controller-protocols'
 
@@ -53,13 +53,22 @@ describe('SaveSurveyResult Controller', () => {
     expect(loadByIdSpy).toHaveBeenCalledWith('any_survey_id')
   })
 
-  /* test('Should return 403 if LoadSurveyById return null', async () => {
+  /*
+    test('Should return 403 if LoadSurveyById return null', async () => {
     const { systemUnderTest, loadSurveyByIdStub } = makeSystemUnderTest()
     jest.spyOn(loadSurveyByIdStub, 'loadById').mockReturnValueOnce(new Promise(resolve => resolve(null)))
     const httpReponse = await systemUnderTest.handle(makeFakeRequest())
     expect(httpReponse.statusCode).toBe(403)
     expect(httpReponse.body).toEqual(new InvalidParamError('surveyId'))
-  }) */
+    })
+  */
+
+  test('Should return 403 if an invalid answer is provided', async () => {
+    const { systemUnderTest } = makeSystemUnderTest()
+    const httpResponse = await systemUnderTest.handle(makeFakeRequest())
+    expect(httpResponse.statusCode).toBe(403)
+    expect(httpResponse.body).toEqual(new InvalidParamError('answer'))
+  })
 
   test('Should return 500 if LoadSurveyById throws', async () => {
     const { systemUnderTest, loadSurveyByIdStub } = makeSystemUnderTest()
