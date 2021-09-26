@@ -1,3 +1,4 @@
+import { ServerError } from '@/presentation/errors'
 import { SaveSurveyResultController } from './save-survey-result-controller'
 import { SurveyModel, LoadSurveyById } from './save-survey-result-controller-protocols'
 
@@ -59,4 +60,12 @@ describe('SaveSurveyResult Controller', () => {
     expect(httpReponse.statusCode).toBe(403)
     expect(httpReponse.body).toEqual(new InvalidParamError('surveyId'))
   }) */
+
+  test('Should return 500 if LoadSurveyById throws', async () => {
+    const { systemUnderTest, loadSurveyByIdStub } = makeSystemUnderTest()
+    jest.spyOn(loadSurveyByIdStub, 'loadById').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const httpReponse = await systemUnderTest.handle(makeFakeRequest())
+    expect(httpReponse.statusCode).toBe(500)
+    expect(httpReponse.body).toEqual(new ServerError())
+  })
 })
