@@ -1,6 +1,5 @@
-import { Decrypter } from '@/data/protocols/cryptography/decrypter'
-import { LoadAccountByTokenRepository } from '@/data/protocols/db/account/load-account-by-token-repository'
 import { DbLoadAccountByToken } from './db-load-account-by-token'
+import { Decrypter, LoadAccountByTokenRepository } from './db-load-account-by-token-protocols'
 
 type SystemUnderTestTypes = {
   systemUnderTest: DbLoadAccountByToken
