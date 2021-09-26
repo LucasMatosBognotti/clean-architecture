@@ -51,4 +51,12 @@ describe('SaveSurveyResult Controller', () => {
     await systemUnderTest.handle(makeFakeRequest())
     expect(loadByIdSpy).toHaveBeenCalledWith('any_survey_id')
   })
+
+  /* test('Should return 403 if LoadSurveyById return null', async () => {
+    const { systemUnderTest, loadSurveyByIdStub } = makeSystemUnderTest()
+    jest.spyOn(loadSurveyByIdStub, 'loadById').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    const httpReponse = await systemUnderTest.handle(makeFakeRequest())
+    expect(httpReponse.statusCode).toBe(403)
+    expect(httpReponse.body).toEqual(new InvalidParamError('surveyId'))
+  }) */
 })
