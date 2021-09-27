@@ -108,9 +108,9 @@ describe('SaveSurveyResult Controller', () => {
   test('Should return 500 if LoadSurveyById throws', async () => {
     const { systemUnderTest, loadSurveyByIdStub } = makeSystemUnderTest()
     jest.spyOn(loadSurveyByIdStub, 'loadById').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-    const httpReponse = await systemUnderTest.handle(makeFakeRequest())
-    expect(httpReponse.statusCode).toBe(500)
-    expect(httpReponse.body).toEqual(new ServerError())
+    const httpResponse = await systemUnderTest.handle(makeFakeRequest())
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 
   test('Should call SaveSurveyResult with correct values', async () => {
@@ -123,5 +123,13 @@ describe('SaveSurveyResult Controller', () => {
       answer: 'any_answer',
       date: new Date()
     })
+  })
+
+  test('Should return 500 if SaveSurveyResult throws', async () => {
+    const { systemUnderTest, saveSurveyResultStub } = makeSystemUnderTest()
+    jest.spyOn(saveSurveyResultStub, 'save').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const httpResponse = await systemUnderTest.handle(makeFakeRequest())
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 })
