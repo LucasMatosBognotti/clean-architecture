@@ -1,17 +1,19 @@
+import MockDate from 'mockdate'
 import { InvalidParamError, ServerError } from '@/presentation/errors'
 import { SaveSurveyResultController } from './save-survey-result-controller'
-import { SurveyModel, LoadSurveyById } from './save-survey-result-controller-protocols'
+import { SurveyModel, LoadSurveyById, SaveSurveyResult, SaveSurveyResultModel, SurveyResultModel } from './save-survey-result-controller-protocols'
 
 type SystemUnderTestTypes = {
   systemUnderTest: SaveSurveyResultController
   loadSurveyByIdStub: LoadSurveyById
+  saveSurveyResultStub: SaveSurveyResult
 }
 
 const makeFakeRequest = (): SaveSurveyResultController.Request => {
   return {
     surveyId: 'any_survey_id',
     accountId: 'any_account_id',
-    answer: ''
+    answer: 'any_answer'
   }
 }
 
@@ -27,6 +29,16 @@ const makeFakeSurvey = (): SurveyModel => {
   }
 }
 
+const makeFakeSurveyResult = (): SurveyResultModel => {
+  return {
+    id: 'valid_id',
+    surveyId: 'valid_survey_id',
+    accountId: 'valid_account_id',
+    answer: 'valid_answer',
+    date: new Date()
+  }
+}
+
 const makeLoadSurveyById = (): LoadSurveyById => {
   class LoadSurveyByIdStub implements LoadSurveyById {
     async loadById (id: string): Promise<SurveyModel> {
@@ -36,16 +48,35 @@ const makeLoadSurveyById = (): LoadSurveyById => {
   return new LoadSurveyByIdStub()
 }
 
+const makeSaveSurveyResult = (): SaveSurveyResult => {
+  class SaveSurveyResultStub implements SaveSurveyResult {
+    async save (data: SaveSurveyResultModel): Promise<SurveyResultModel> {
+      return new Promise(resolve => resolve(makeFakeSurveyResult()))
+    }
+  }
+  return new SaveSurveyResultStub()
+}
+
 const makeSystemUnderTest = (): SystemUnderTestTypes => {
   const loadSurveyByIdStub = makeLoadSurveyById()
-  const systemUnderTest = new SaveSurveyResultController(loadSurveyByIdStub)
+  const saveSurveyResultStub = makeSaveSurveyResult()
+  const systemUnderTest = new SaveSurveyResultController(loadSurveyByIdStub, saveSurveyResultStub)
   return {
     systemUnderTest,
-    loadSurveyByIdStub
+    loadSurveyByIdStub,
+    saveSurveyResultStub
   }
 }
 
 describe('SaveSurveyResult Controller', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
+
   test('Should call LoadSurveyById with correct values', async () => {
     const { systemUnderTest, loadSurveyByIdStub } = makeSystemUnderTest()
     const loadByIdSpy = jest.spyOn(loadSurveyByIdStub, 'loadById')
@@ -65,7 +96,11 @@ describe('SaveSurveyResult Controller', () => {
 
   test('Should return 403 if an invalid answer is provided', async () => {
     const { systemUnderTest } = makeSystemUnderTest()
-    const httpResponse = await systemUnderTest.handle(makeFakeRequest())
+    const httpResponse = await systemUnderTest.handle({
+      surveyId: 'any_id',
+      accountId: 'any_account_id',
+      answer: 'wrong_answer'
+    })
     expect(httpResponse.statusCode).toBe(403)
     expect(httpResponse.body).toEqual(new InvalidParamError('answer'))
   })
@@ -76,5 +111,17 @@ describe('SaveSurveyResult Controller', () => {
     const httpReponse = await systemUnderTest.handle(makeFakeRequest())
     expect(httpReponse.statusCode).toBe(500)
     expect(httpReponse.body).toEqual(new ServerError())
+  })
+
+  test('Should call SaveSurveyResult with correct values', async () => {
+    const { systemUnderTest, saveSurveyResultStub } = makeSystemUnderTest()
+    const saveSpy = jest.spyOn(saveSurveyResultStub, 'save')
+    await systemUnderTest.handle(makeFakeRequest())
+    expect(saveSpy).toHaveBeenCalledWith({
+      surveyId: 'any_survey_id',
+      accountId: 'any_account_id',
+      answer: 'any_answer',
+      date: new Date()
+    })
   })
 })
