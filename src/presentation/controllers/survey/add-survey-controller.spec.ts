@@ -1,5 +1,5 @@
 import MockDate from 'mockdate'
-import { HttpRequest, Validation, AddSurvey } from './add-survey-controller-protocols'
+import { Validation, AddSurvey } from './add-survey-controller-protocols'
 import { AddSurveyController } from './add-survey-controller'
 import { badRequest, noContent, serverError } from '@/presentation/helpers/http/http-helper'
 
@@ -9,17 +9,15 @@ type SystemUnderTestTypes = {
   addSurveyStub: AddSurvey
 }
 
-const makeFakeRequest = (): HttpRequest => ({
-  body: {
-    question: 'any_question',
-    answers: [
-      {
-        image: 'any_image',
-        answer: 'any_answer'
-      }
-    ],
-    date: new Date()
-  }
+const makeFakeRequest = (): AddSurveyController.Request => ({
+  question: 'any_question',
+  answers: [
+    {
+      image: 'any_image',
+      answer: 'any_answer'
+    }
+  ],
+  date: new Date()
 })
 
 const makeValidation = (): Validation => {
@@ -66,7 +64,7 @@ describe('AddSuvey Controller', () => {
     const validateSpy = jest.spyOn(validationStub, 'validate')
     const httpRequest = makeFakeRequest()
     await systemUnderTest.handle(httpRequest)
-    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+    expect(validateSpy).toHaveBeenCalledWith(httpRequest)
   })
 
   test('Should return 400 if Validation fails', async () => {
@@ -81,7 +79,7 @@ describe('AddSuvey Controller', () => {
     const addSpy = jest.spyOn(addSurveyStub, 'add')
     const httpRequest = makeFakeRequest()
     await systemUnderTest.handle(httpRequest)
-    expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
+    expect(addSpy).toHaveBeenCalledWith(httpRequest)
   })
 
   test('Should return 500 if AddSurvey throws', async () => {

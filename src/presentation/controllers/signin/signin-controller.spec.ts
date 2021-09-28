@@ -1,4 +1,4 @@
-import { HttpRequest, Authentication, Validation } from './signin-controller-protocols'
+import { Authentication, Validation } from './signin-controller-protocols'
 import { MissingParamError, ServerError, UnathorizedError } from '@/presentation/errors'
 import { SignInController } from './signin-controller'
 import { AuthenticationModel } from '@/domain/usecases/authentication'
@@ -9,11 +9,10 @@ type SystemUnderTestTypes = {
   authenticationStub: Authentication
 }
 
-const makeFakeRequest = (): HttpRequest => ({
-  body: {
-    email: 'any_email@mail.com',
-    password: 'any_password'
-  }
+const makeFakeRequest = (): SignInController.Request => ({
+  email: 'any_email@mail.com',
+  password: 'any_password'
+
 })
 
 const makeValidation = (): Validation => {
@@ -82,7 +81,7 @@ describe('SignIn Controller', () => {
     const validateSpy = jest.spyOn(validationStub, 'validate')
     const httpRequest = makeFakeRequest()
     await systemUnderTest.handle(httpRequest)
-    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+    expect(validateSpy).toHaveBeenCalledWith(httpRequest)
   })
 
   test('Should return 400 if Validation return an error', async () => {

@@ -1,4 +1,4 @@
-import { Controller, HttpRequest, HttpResponse, Authentication, Validation } from './signin-controller-protocols'
+import { Controller, HttpResponse, Authentication, Validation } from './signin-controller-protocols'
 import { badRequest, serverError, successRequest, unauthorized } from '@/presentation/helpers/http/http-helper'
 
 export class SignInController implements Controller {
@@ -10,13 +10,13 @@ export class SignInController implements Controller {
     this.authentication = authentication
   }
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle (request: SignInController.Request): Promise<HttpResponse> {
     try {
-      const error = this.validation.validate(httpRequest.body)
+      const error = this.validation.validate(request)
       if (error) {
         return badRequest(error)
       }
-      const { email, password } = httpRequest.body
+      const { email, password } = request
       const accessToken = await this.authentication.auth({ email, password })
       if (!accessToken) {
         return unauthorized()
@@ -25,5 +25,12 @@ export class SignInController implements Controller {
     } catch (err) {
       return serverError(err as Error)
     }
+  }
+}
+
+export namespace SignInController {
+  export type Request = {
+    email: string
+    password: string
   }
 }
