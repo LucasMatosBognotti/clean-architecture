@@ -1,7 +1,7 @@
 import MockDate from 'mockdate'
 import { InvalidParamError, ServerError } from '@/presentation/errors'
 import { SaveSurveyResultController } from './save-survey-result-controller'
-import { SurveyModel, LoadSurveyById, SaveSurveyResult, SaveSurveyResultModel, SurveyResultModel } from './save-survey-result-controller-protocols'
+import { SurveyModel, LoadSurveyById, SaveSurveyResult, SurveyResultModel } from './save-survey-result-controller-protocols'
 
 type SystemUnderTestTypes = {
   systemUnderTest: SaveSurveyResultController
@@ -50,7 +50,7 @@ const makeLoadSurveyById = (): LoadSurveyById => {
 
 const makeSaveSurveyResult = (): SaveSurveyResult => {
   class SaveSurveyResultStub implements SaveSurveyResult {
-    async save (data: SaveSurveyResultModel): Promise<SurveyResultModel> {
+    async save (data: SaveSurveyResult.Params): Promise<SaveSurveyResult.Result> {
       return new Promise(resolve => resolve(makeFakeSurveyResult()))
     }
   }
