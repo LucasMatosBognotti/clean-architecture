@@ -88,4 +88,12 @@ describe('LoadSurveyResult Controller', () => {
     await systemUnderTest.handle(request)
     expect(loadSpy).toHaveBeenCalledWith(request.surveyId, request.accountId)
   })
+
+  it('Should return 500 if LoadSurveyResult throws', async () => {
+    const { systemUnderTest, loadSurveyResultStub } = makeSystemUnderTest()
+    jest.spyOn(loadSurveyResultStub, 'load').mockRejectedValueOnce(new Promise((resolve, reject) => resolve(new Error())))
+    const httpResponse = await systemUnderTest.handle(makeFakeRequest())
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
+  })
 })
