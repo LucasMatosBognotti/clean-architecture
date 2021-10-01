@@ -1,3 +1,4 @@
+import MockDate from 'mockdate'
 import { CheckSurveyById } from '@/domain/usecases/check-survey-by-id'
 import { LoadSurveyResult } from '@/domain/usecases/load-survey-result'
 import { InvalidParamError, ServerError } from '@/presentation/errors'
@@ -57,6 +58,14 @@ const makeSystemUnderTest = (): SystemUnderTestTypes => {
 }
 
 describe('LoadSurveyResult Controller', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
+
   it('Should call CheckSurveyById with correct values', async () => {
     const { systemUnderTest, checkSurveyByIdStub } = makeSystemUnderTest()
     const checkByIdSpy = jest.spyOn(checkSurveyByIdStub, 'checkById')
@@ -68,9 +77,9 @@ describe('LoadSurveyResult Controller', () => {
   it('Should return 403 if CheckSurveyById returns false', async () => {
     const { systemUnderTest, checkSurveyByIdStub } = makeSystemUnderTest()
     jest.spyOn(checkSurveyByIdStub , 'checkById').mockReturnValueOnce(new Promise(resolve => resolve(false)))
-    const httpReponse = await systemUnderTest.handle(makeFakeRequest())
-    expect(httpReponse.statusCode).toBe(403)
-    expect(httpReponse.body).toEqual(new InvalidParamError('surveyId'))
+    const httpResponse = await systemUnderTest.handle(makeFakeRequest())
+    expect(httpResponse.statusCode).toBe(403)
+    expect(httpResponse.body).toEqual(new InvalidParamError('surveyId'))
   })
 
   it('Should return 500 if CheckSurveyById throws', async () => {
@@ -95,5 +104,12 @@ describe('LoadSurveyResult Controller', () => {
     const httpResponse = await systemUnderTest.handle(makeFakeRequest())
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
+  })
+
+  it('Should return 200 on success', async () => {
+    const { systemUnderTest } = makeSystemUnderTest()
+    const httpResponse = await systemUnderTest.handle(makeFakeRequest())
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual(makeFakeLoadSurveyResult())
   })
 })
