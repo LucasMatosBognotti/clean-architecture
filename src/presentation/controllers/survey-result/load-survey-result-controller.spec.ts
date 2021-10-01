@@ -1,6 +1,6 @@
 import { CheckSurveyById } from '@/domain/usecases/check-survey-by-id'
 import { LoadSurveyResult } from '@/domain/usecases/load-survey-result'
-import { InvalidParamError } from '@/presentation/errors'
+import { InvalidParamError, ServerError } from '@/presentation/errors'
 import { LoadSurveyResultController } from './load-survey-result-controller'
 
 type SystemUnderTestTypes = {
@@ -71,6 +71,14 @@ describe('LoadSurveyResult Controller', () => {
     const httpReponse = await systemUnderTest.handle(makeFakeRequest())
     expect(httpReponse.statusCode).toBe(403)
     expect(httpReponse.body).toEqual(new InvalidParamError('surveyId'))
+  })
+
+  it('Should return 500 if CheckSurveyById throws', async () => {
+    const { systemUnderTest, checkSurveyByIdStub } = makeSystemUnderTest()
+    jest.spyOn(checkSurveyByIdStub, 'checkById').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const httpResponse = await systemUnderTest.handle(makeFakeRequest())
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 
   it('Should call LoadSurveyResult with correct values', async () => {
