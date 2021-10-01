@@ -1,7 +1,7 @@
 import { CheckSurveyById } from '@/domain/usecases/check-survey-by-id'
 import { LoadSurveyResult } from '@/domain/usecases/load-survey-result'
 import { InvalidParamError } from '@/presentation/errors'
-import { forbidden, serverError } from '@/presentation/helpers/http/http-helper'
+import { forbidden, serverError, successRequest } from '@/presentation/helpers/http/http-helper'
 import { Controller, HttpResponse } from '@/presentation/protocols'
 
 export class LoadSurveyResultController implements Controller {
@@ -20,11 +20,8 @@ export class LoadSurveyResultController implements Controller {
       if (!exist) {
         return forbidden(new InvalidParamError('surveyId'))
       }
-      await this.loadSurveyResult.load(surveyId, accountId)
-      return {
-        body: '',
-        statusCode: 200
-      }
+      const surveyResult = await this.loadSurveyResult.load(surveyId, accountId)
+      return successRequest(surveyResult)
     } catch (err) {
       return serverError(err as Error)
     }
