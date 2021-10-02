@@ -39,7 +39,7 @@ const makeCheckSurveyById = (): CheckSurveyById => {
 
 const makeLoadSurveyResult = (): LoadSurveyResult => {
   class LoadSurveyResultStub implements LoadSurveyResult {
-    async load (surveyId: string, accountId: string): Promise<LoadSurveyResult.Result> {
+    async load ({ surveyId, accountId }: LoadSurveyResult.Params): Promise<LoadSurveyResult.Result> {
       return new Promise(resolve => resolve(makeFakeLoadSurveyResult()))
     }
   }
@@ -93,9 +93,9 @@ describe('LoadSurveyResult Controller', () => {
   it('Should call LoadSurveyResult with correct values', async () => {
     const { systemUnderTest, loadSurveyResultStub } = makeSystemUnderTest()
     const loadSpy = jest.spyOn(loadSurveyResultStub, 'load')
-    const request = makeFakeRequest()
-    await systemUnderTest.handle(request)
-    expect(loadSpy).toHaveBeenCalledWith(request.surveyId, request.accountId)
+    const { accountId, surveyId } = makeFakeRequest()
+    await systemUnderTest.handle({ accountId, surveyId })
+    expect(loadSpy).toHaveBeenCalledWith({ accountId, surveyId })
   })
 
   it('Should return 500 if LoadSurveyResult throws', async () => {
