@@ -57,4 +57,12 @@ describe('DbLoadSurveyResult UseCase', () => {
     await systemUnderTest.load({ surveyId, accountId })
     expect(loadSpy).toHaveBeenCalledWith({ surveyId, accountId })
   })
+
+  it('Should throw if LoadSurveyResultRepositorym throws', async () => {
+    const { systemUnderTest, loadSurveyResultRepositoryStub } = makeSystemUnderTest()
+    jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const { accountId, surveyId } = makeFakeLoadSurveyData()
+    const promise = systemUnderTest.load({ accountId, surveyId })
+    await expect(promise).rejects.toThrow()
+  })
 })
